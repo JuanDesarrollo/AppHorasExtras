@@ -1,0 +1,60 @@
+{
+  "name": "hr-extras-react",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@fontsource/roboto": "^5.0.13",
+    "@mui/icons-material": "^5.15.20",
+    "@mui/material": "^5.16.0",
+    "@mui/styled-engine": "^5.15.14",
+    "@mui/styled-engine-sc": "^6.0.0-alpha.18",
+    "@mui/x-data-grid": "^7.9.0",
+    "@mui/x-data-grid-premium": "^7.9.0",
+    "@react-pdf/renderer": "^3.4.4",
+    "axios": "^1.6.8",
+    "bootstrap": "^5.3.3",
+    "chart.js": "^4.4.3",
+    "date-holidays": "^3.23.12",
+    "localforage": "^1.10.0",
+    "luxon": "^3.4.4",
+    "match-sorter": "^6.3.4",
+    "mui-datatables": "^4.3.0",
+    "react": "^17.0.0 || ^18.0.0",
+    "react-bootstrap": "^2.10.2",
+    "react-calendar": "^5.0.0",
+    "react-chartjs-2": "^5.2.0",
+    "react-data-table-component": "^7.6.2",
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "react-modal": "^3.16.1",
+    "react-pdf": "^9.1.0",
+    "react-router-dom": "^6.23.1",
+    "react-tooltip": "^5.26.4",
+    "sort-by": "^0.0.2",
+    "styled-components": "^6.1.11",
+    "sweetalert2": "^11.6.13",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "vite": "^5.2.0"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0"
+  }
+}

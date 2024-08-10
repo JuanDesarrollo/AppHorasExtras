@@ -1,0 +1,180 @@
+.st1 {
+    max-height: calc(100vh - 215px);
+}
+
+.imgst {
+    background-image: url(./assets/images/layout/img-profile-card.jpg);
+}
+
+.NotFound {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 10%;
+}
+
+.showHorasCreador {
+    cursor: pointer;
+    margin-right: 20px;
+    border-radius: 16px;
+    background: 0 0;
+    color: #5b6b79;
+    border-color: transparent;
+}
+
+.deleteHorasCreador {
+    cursor: pointer;
+    border-radius: 16px;
+    color: #5b6b79;
+    border-color: transparent;
+}
+
+.showHorasCreador:hover {
+    background-color: rgb(195, 221, 245);
+
+}
+
+.deleteHorasCreador:hover {
+    background-color: rgb(248, 213, 213);
+}
+
+.añadirHr {
+    margin: 10px;
+}
+
+
+.tooltip-cell {
+    position: relative;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    /* Ajusta según sea necesario */
+}
+
+.tooltip-content {
+    display: none;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 125%;
+    /* Ajusta según sea necesario */
+    background-color: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    white-space: normal;
+    z-index: 1000;
+    width: 300px;
+    /* Ajusta según sea necesario */
+    height: 300px;
+    /* Ajusta según sea necesario */
+    word-wrap: break-word;
+    font-size: 14px;
+    line-height: 1.2;
+    overflow: auto;
+}
+
+.tooltip-cell:hover .tooltip-content {
+    display: block;
+}
+
+.custom-row-height {
+    height: 5px;
+    /* Ajusta esta altura según sea necesario */
+}
+
+.iconQuitEmployeExtras {
+    margin-left: 35px;
+    cursor: pointer;
+}
+
+.esHoraExras {
+    padding-bottom: 10px;
+    margin: 15px;
+}
+
+.esHoraExrasInput {
+    margin-right: 3px;
+}
+
+.inputHorasTrabajadas {
+    padding: 0px;
+    height: 10px;
+    margin-right: 20px;
+}
+
+.divinputHorasTrabajadas {
+    margin-right: 28px;
+    margin-bottom: 10px;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.titleHrDespliegue {
+    padding-top: 10px;
+    text-align: center;
+}
+
+.spanDespliegueExt {
+    color: black;
+    font-weight: bold;
+}
+
+.h1HorasAprobar {
+    margin-top: 25%;
+    text-align: center;
+}
+
+.iconAprobar {
+    margin-right: 20px;
+}
+
+.btn_jefe_aprobar {
+    padding-right: 50px;
+}
+
+
+div.MuiPaper-root {
+    border-top-left-radius: 9px;
+    border-end-start-radius: 9px;
+}
+
+.contenD {
+    border: 1px solid #cad5e1;
+    border-radius: 7px;
+}
+
+.camuflaje {
+    border: none;
+}
+
+.espacio_abajo {
+    padding-bottom: 2px;
+}
+
+.clic {
+    cursor: pointer;
+}
+
+.swal2-container {
+    z-index: 15000;
+}
+
+.iconActividades {
+    padding-top: 20px;
+    font-family: fantasy;
+    font-size: 26px;
+    color: rgb(70, 128, 255);
+}
+
+.versionIcon {
+    font-size: 15px;
+}
+
+.separacion_bottom{
+    margin-bottom: 10px;
+}

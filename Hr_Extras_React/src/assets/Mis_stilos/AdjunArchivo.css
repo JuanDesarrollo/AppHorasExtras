@@ -1,0 +1,32 @@
+.container {
+    margin: 20px;
+  }
+  
+  .upload-box {
+    border: 2px dashed #ccc;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .file-input {
+    display: none;
+  }
+  
+  .upload-box::before {
+    content: 'Haga clic para seleccionar archivos';
+    color: #888;
+    cursor: pointer;
+  }
+  
+  .upload-box:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .file-list {
+    margin-top: 20px;
+  }
+  
+  .file-list h4 {
+    margin-bottom: 10px;
+  }
+  
