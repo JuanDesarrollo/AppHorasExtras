@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Employee\EmployeePegarRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\area;
 use App\Models\court;
@@ -24,8 +25,8 @@ class EmployeeController extends Controller
         try {
             // Obtiene el usuario autenticado
             $user = Auth::user();
-            $userId = $user->employee_id; 
-            
+            $userId = $user->employee_id;
+
             $employe = employee::find($userId)->area_id;
             return ApiResponse::success("datos", 200, Employee::where('area_id', $employe)->get());
         } catch (Exception $e) {
@@ -83,71 +84,63 @@ class EmployeeController extends Controller
         }
     }
 
-    public function Employee_pegarHr(Request $request)
+    public function Employee_pegarHr(EmployeePegarRequest $request)
     {
-        try {
-            $request->validate([
-                "employe_copiado" => "required",
-                "employee_pegar" => "required"
+
+        $user = Auth::user()->employee_id;
+        $employe = employee::find($user)->area_id;
+        $area = area::find($employe)->id;
+
+        //$current_c = current_cut::select("court_id")->where("area_id",  $area)->get();
+        $corteActual =  court::where('status', 'abierto')->first()->id;
+
+        $corte = court::find($corteActual)->id;
+
+
+        $id_emp_ext = employee_extra::whereIn("employee_id", $request->employe_copiado)
+            ->where("court_id", $corte)
+            ->select("id")->pluck("id");
+        //$hr_Ext = extra_hour::whereIn("employee_extra_id",[ $id_emp_ext])->get();
+
+        $hr_Ext = extra_hour::whereIn("employee_extra_id", [$id_emp_ext])->get();
+        $id_original = $hr_Ext;
+        // Valor externo que deseas asignar a `employee_extra_id`
+        $external_value = employee_extra::whereIn("employee_id", [$request->employee_pegar])
+            ->where("court_id", $corte)->pluck("id"); // Reemplaza esto con el valor deseado
+        // Modificar cada objeto en la colección para cambiar `employee_extra_id`
+
+
+        $details = detail_hour::whereIn("extra_hour_id", $id_original->pluck("id"))->get();
+
+        // Crear instancias de extra_hour
+        $createdHours = $hr_Ext->map(function ($item) use ($external_value) {
+            return extra_hour::create([
+                "employee_extra_id" => $external_value[0], // Asegúrate de que $external_value sea un array con al menos un elemento
+                "date_i" => $item->date_i,
+                "date_f" => $item->date_f,
+                "time_i" => $item->time_i,
+                "time_f" => $item->time_f,
+                "status" => "creador"
             ]);
+        });
 
-            $user = Auth::user()->employee_id;
-            $employe = employee::find($user)->area_id;
-            $area = area::find($employe)->id;
+        $id_new_hr = $createdHours->pluck("id");
 
-            //$current_c = current_cut::select("court_id")->where("area_id",  $area)->get();
-            $corteActual =  court::where('status', 'abierto')->first()->id;
+        $details->each(function ($detail, $item) use ($id_new_hr) {
+            detail_hour::create([
+                "extra_hour_id" => $id_new_hr[$item], // Asignar el ID de la nueva instancia de extra_hour
+                "rn" => $detail->rn,
+                "hed" => $detail->hed,
+                "hen" => $detail->hen,
+                "rdd" => $detail->rdd,
+                "rdn" => $detail->rdn,
+                "hedd" => $detail->hedd,
+                "hedn" => $detail->hedn,
+                "justification" => $detail->justification
+            ]);
+        });
 
-            $corte = court::find($corteActual)->id;
-
-
-            $id_emp_ext = employee_extra::whereIn("employee_id", $request->employe_copiado)
-                ->where("court_id", $corte)
-                ->select("id")->pluck("id");
-            //$hr_Ext = extra_hour::whereIn("employee_extra_id",[ $id_emp_ext])->get();
-
-            $hr_Ext = extra_hour::whereIn("employee_extra_id", [$id_emp_ext])->get();
-            $id_original = $hr_Ext;
-            // Valor externo que deseas asignar a `employee_extra_id`
-            $external_value = employee_extra::whereIn("employee_id", [$request->employee_pegar])
-                ->where("court_id", $corte)->pluck("id"); // Reemplaza esto con el valor deseado
-            // Modificar cada objeto en la colección para cambiar `employee_extra_id`
-
-
-            $details = detail_hour::whereIn("extra_hour_id", $id_original->pluck("id"))->get();
-
-            // Crear instancias de extra_hour
-            $createdHours = $hr_Ext->map(function ($item) use ($external_value) {
-                return extra_hour::create([
-                    "employee_extra_id" => $external_value[0], // Asegúrate de que $external_value sea un array con al menos un elemento
-                    "date_i" => $item->date_i,
-                    "date_f" => $item->date_f,
-                    "time_i" => $item->time_i,
-                    "time_f" => $item->time_f,
-                    "status" => "creador"
-                ]);
-            });
-
-            $id_new_hr = $createdHours->pluck("id");
-
-            $details->each(function ($detail, $item) use ($id_new_hr) {
-                detail_hour::create([
-                    "extra_hour_id" => $id_new_hr[$item], // Asignar el ID de la nueva instancia de extra_hour
-                    "rn" => $detail->rn,
-                    "hed" => $detail->hed,
-                    "hen" => $detail->hen,
-                    "rdd" => $detail->rdd,
-                    "rdn" => $detail->rdn,
-                    "hedd" => $detail->hedd,
-                    "hedn" => $detail->hedn,
-                    "justification" => $detail->justification
-                ]);
-            });
-
-            return ApiResponse::success("Horas pegadas", 200, []);
-        } catch (\Throwable $th) {
-            return ApiResponse::error("Ocurrio un err", 420);
-        }
+        return ApiResponse::success("Horas pegadas", 200, []);
     }
 
     public function all_employees()

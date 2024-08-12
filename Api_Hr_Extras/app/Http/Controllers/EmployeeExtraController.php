@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EmployeeExtraCreateRequest;
+use App\Http\Requests\EmployeeExtras\EliminarEmpleadoRequest;
+use App\Http\Requests\EmployeeExtras\EmployeeExtraUpdateRequest;
+use App\Http\Requests\EmployeeExtras\HorasPorEmpleadoRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\area;
 use App\Models\court;
@@ -82,39 +86,27 @@ class EmployeeExtraController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(EmployeeExtraCreateRequest $request)
     {
-        try {
-
-            $request->validate([
-                'employee_id' => 'required|exists:employees,id',
-                'status' => 'required|string',
-                'area' => 'required||exists:areas,id'
-            ]);
+        //$employe = current_cut::where("area_id", $request->area)->first();
+        $corteActual =  court::where('status', 'abierto')->first()->id;
+        $daa = employee_extra::where("employee_id", $request->employee_id)
+            ->where("court_id", $corteActual)
+            ->get();
 
 
-            //$employe = current_cut::where("area_id", $request->area)->first();
-            $corteActual =  court::where('status', 'abierto')->first()->id;
-            $daa = employee_extra::where("employee_id", $request->employee_id)
-                ->where("court_id", $corteActual)
-                ->get();
+        if ($daa->isEmpty()) {
+            $employee_extra = employee_extra::create(
+                [
+                    "employee_id" => $request->employee_id,
+                    "court_id" => $corteActual,
+                    "status" => $request->status
+                ]
+            );
 
-
-            if ($daa->isEmpty()) {
-                $employee_extra = employee_extra::create(
-                    [
-                        "employee_id" => $request->employee_id,
-                        "court_id" => $corteActual,
-                        "status" => $request->status
-                    ]
-                );
-
-                return ApiResponse::success("Agregado con exito", 201, $employee_extra);
-            } else {
-                return ApiResponse::error("Este empleado ya está agregado", 401, []);
-            }
-        } catch (Exception $e) {
-            return ApiResponse::error("Ocurrio un error", 401);
+            return ApiResponse::success("Agregado con exito", 201, $employee_extra);
+        } else {
+            return ApiResponse::error("Este empleado ya está agregado", 401, []);
         }
     }
 
@@ -129,24 +121,13 @@ class EmployeeExtraController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, employee_extra $employee_extra)
+    public function update(EmployeeExtraUpdateRequest $request, employee_extra $employee_extra)
     {
 
-        try {
-            // Validar la solicitud
-            $validatedData = $request->validate([
-                'status' => 'required',
-                // Agrega otras reglas de validación según sea necesario
-            ]);
-            // Actualizar el registro con los datos validados
-            $employee_extra->update($validatedData);
+        // Actualizar el registro con los datos validados
+        $employee_extra->update($request->all());
 
-
-
-            return ApiResponse::success("Realizado", 201, []);
-        } catch (\Throwable $th) {
-            return ApiResponse::error('Ocurrio un error', []);
-        } //
+        return ApiResponse::success("Realizado", 201, []);
     }
 
     /**
@@ -165,13 +146,8 @@ class EmployeeExtraController extends Controller
 
 
 
-    public function eliminarEmpleado(Request $request)
+    public function eliminarEmpleado(EliminarEmpleadoRequest $request)
     {
-        $request->validate([
-            'id' => 'required',
-            //|exists:employee_extras,id
-        ]);
-
         $ids = $request->id;
 
         try {
@@ -184,36 +160,28 @@ class EmployeeExtraController extends Controller
         }
     }
 
-    public function horasPorEmpleado(Request $request)
+    public function horasPorEmpleado(HorasPorEmpleadoRequest $request)
     {
-        try {
 
-            $request->validate([
-                "id" => 'required|exists:employee_extras,id'
-            ]);
+        $user = Auth::user();
+        $role = $user->roles()->first(); // Obtener el primer rol del usuario
 
-            $user = Auth::user();
-            $role = $user->roles()->first(); // Obtener el primer rol del usuario
-
-            $filter = '';
-            // Verificar el rol y aplicar condiciones de filtro
-            if ($role->name === 'creador') {
-                $filter =  ['Jefe', 'creador', 'dp_jefe', 'ap_jefe', 'dp_nomina', 'ap_nomina',   'ap_control_interno', 'dp_control_interno'];
-            } else if ($role->name === 'jefe') {
-                $filter =  ['Jefe',  'dp_nomina', 'dp_control_interno'];
-            }
-
-            // Continuar con las condiciones y las relaciones
-
-            $employees = extra_hour::whereIn('status', $filter)
-                ->where('employee_extra_id', $request->id)
-                ->with('detailHours.disapprovedHour.user')->get();
-
-            // Devuelve los datos en formato JSON
-            return ApiResponse::success("success", 201, $employees);
-        } catch (\Exception $e) {
-            return ApiResponse::error("Ocurrio un error o el corte no ha sido seleccionado", 401);
+        $filter = '';
+        // Verificar el rol y aplicar condiciones de filtro
+        if ($role->name === 'creador') {
+            $filter =  ['Jefe', 'creador', 'dp_jefe', 'ap_jefe', 'dp_nomina', 'ap_nomina',   'ap_control_interno', 'dp_control_interno'];
+        } else if ($role->name === 'jefe') {
+            $filter =  ['Jefe',  'dp_nomina', 'dp_control_interno'];
         }
+
+        // Continuar con las condiciones y las relaciones
+
+        $employees = extra_hour::whereIn('status', $filter)
+            ->where('employee_extra_id', $request->id)
+            ->with('detailHours.disapprovedHour.user')->get();
+
+        // Devuelve los datos en formato JSON
+        return ApiResponse::success("success", 201, $employees);
     }
 
     public function horas_porcentaje()

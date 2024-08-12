@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DisapprovedHour\DisapprovedHourCreate;
 use App\Http\Responses\ApiResponse;
 use App\Models\disapproved_hour;
 use Illuminate\Http\Request;
@@ -21,23 +22,15 @@ class DisapprovedHourController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(DisapprovedHourCreate $request)
     {
-
         try {
-            $request->validate([
-                'reason' => 'required',
-                'id' => 'required|exists:detail_hours,id'
-            ]);
-
             $user = Auth::user()->id;
-
             disapproved_hour::create([
                 "detail_hour_id" => $request->id,
                 "reason" => $request->reason,
                 "user_id" => $user
             ]);
-
             return ApiResponse::success("Realizado", 200, []);
         } catch (\Error $th) {
             //throw $th;

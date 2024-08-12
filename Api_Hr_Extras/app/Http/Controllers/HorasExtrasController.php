@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\HorasExtras\EnviarTodasRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\area;
 use App\Models\court;
@@ -13,13 +14,9 @@ use Illuminate\Support\Facades\Auth;
 
 class HorasExtrasController extends Controller
 {
-    public function EnviarTodas(Request $request)
+    public function EnviarTodas(EnviarTodasRequest $request)
     {
-        try {
-            $request->validate([
-                'status' => 'required',
-                'id' => 'required'
-            ]);
+
 
             $userT = Auth::user();
             $role = $userT->roles()->first(); // Obtener el primer rol del usuario
@@ -57,7 +54,6 @@ class HorasExtrasController extends Controller
             }
 
             return ApiResponse::success('Horas enviadas', 200, []);
-        } catch (\Exception $exception) {
-        }
+
     }
 }

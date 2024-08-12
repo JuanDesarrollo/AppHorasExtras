@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CurrentCut\CurrentCutCreateRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\area;
 use App\Models\court;
@@ -54,35 +55,23 @@ class CurrentCutController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CurrentCutCreateRequest $request)
     {
 
+        // Buscar si existe un registro con el area_id dado
+        $currentCut = current_cut::where('area_id', $request->input('area_id'))->first();
 
-        try {
-
-            $request->validate([
-                'court_id' => 'required|exists:courts,id',
-                'area_id'  => 'required|exists:areas,id'
-            ]);
-
-
-            // Buscar si existe un registro con el area_id dado
-            $currentCut = current_cut::where('area_id', $request->input('area_id'))->first();
-
-            if ($currentCut) {
-                // Si existe, actualizar el court_id
-                $currentCut->court_id = $request->input('court_id');
-                $currentCut->save();
-            } else {
-                // Si no existe, crear un nuevo registro
-                $currentCut = current_cut::create($request->all());
-            }
-
-
-            return ApiResponse::success("agregado", 201, $currentCut);
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), 401);
+        if ($currentCut) {
+            // Si existe, actualizar el court_id
+            $currentCut->court_id = $request->input('court_id');
+            $currentCut->save();
+        } else {
+            // Si no existe, crear un nuevo registro
+            $currentCut = current_cut::create($request->all());
         }
+
+
+        return ApiResponse::success("agregado", 201, $currentCut);
     }
 
     /**

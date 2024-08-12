@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Court\CourtCreateRequest;
+use App\Http\Requests\Court\CourtEstadoUpdateRequest;
+use App\Http\Requests\Court\CourtUpdateRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\court;
 use Exception;
@@ -27,21 +30,11 @@ class CourtController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CourtCreateRequest $request)
     {
-        try {
-            $request->validate([
-                "name" => "required",
-                "date_i" => "required",
-                "date_f" => "required"
-            ]);
+        $data = court::create($request->all());
 
-            $data = court::create($request->all());
-
-            return ApiResponse::success("Registro agregado", 200, $data);
-        } catch (\Throwable $th) {
-            return ApiResponse::error("Ocurrio un error", 400, []);
-        }
+        return ApiResponse::success("Registro agregado", 200, $data);
     }
 
     /**
@@ -55,14 +48,9 @@ class CourtController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, court $court, $id)
+    public function update(CourtEstadoUpdateRequest $request, court $court, $id)
     {
         try {
-            // Validar la solicitud
-            $request->validate([
-                'status' => 'required',
-                // Agrega otras reglas de validación según sea necesario
-            ]);
 
             $auten = Auth::user()->id;
             // Actualizar el registro con los datos validados
@@ -79,29 +67,17 @@ class CourtController extends Controller
         } //
     }
 
-    public function UpdateCorte(Request $request, court $court, $id)
+    public function UpdateCorte(CourtCreateRequest $request, court $court, $id)
     {
-        try {
-            // Validar la solicitud
-            $request->validate([
-                'name' => 'required',
-                'date_i' => 'required',
-                'date_f' => 'required',
-                // Agrega otras reglas de validación según sea necesario
-            ]);
+        $dat = $court->findOrFail($id);
 
-            $dat = $court->findOrFail($id);
+        $dat->update([
+            'name' => $request->name,
+            'date_i' => $request->date_i,
+            'date_f' => $request->date_f,
+        ]);
 
-            $dat->update([
-                'name' => $request->name,
-                'date_i' => $request->date_i,
-                'date_f' => $request->date_f,
-            ]);
-
-            return ApiResponse::success("Corte actualizado", 201, [$dat]);
-        } catch (\Throwable $th) {
-            return ApiResponse::error('Ocurrio un error', []);
-        } //
+        return ApiResponse::success("Corte actualizado", 201, [$dat]);
     }
 
     /**

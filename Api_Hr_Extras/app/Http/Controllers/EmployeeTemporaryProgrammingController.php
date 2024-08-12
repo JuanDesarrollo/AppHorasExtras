@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EmployeeTemporaryProgramming\EmployeeTemporaryProgrammingRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\employee;
 use App\Models\EmployeeTemporaryProgramming;
@@ -32,20 +33,10 @@ class EmployeeTemporaryProgrammingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(EmployeeTemporaryProgrammingRequest $request)
     {
-
-        try {
-            $request->validate([
-                "employee_id" => "required"
-            ]);
-
-
-            $data = EmployeeTemporaryProgramming::create($request->all());
-            return ApiResponse::success("Agregado", 200, $data);
-        } catch (\Throwable $th) {
-            return ApiResponse::error("Ocurrio un error", 400, []);
-        }
+        $data = EmployeeTemporaryProgramming::create($request->all());
+        return ApiResponse::success("Agregado", 200, $data);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\HorasPorcentajes\HorasPorcentajesUpdateRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\HorasPorcentajes;
 use Illuminate\Http\Request;
@@ -37,17 +38,9 @@ class HorasPorcentajesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, HorasPorcentajes $horasPorcentajes,  $id)
+    public function update(HorasPorcentajesUpdateRequest $request, HorasPorcentajes $horasPorcentajes,  $id)
     {
 
-        try {
-
-            $request->validate([
-                "conceptos" => 'required',
-                "porcentaje" => 'required',
-                "company_code" => 'required',
-                "company_code_seguridad" => 'required',
-            ]);
 
             // $data = $request->all();
             $userid = Auth::user()->id;
@@ -60,9 +53,7 @@ class HorasPorcentajesController extends Controller
                 "user" =>  $userid
             ]);
             return ApiResponse::success('Registro actualizado', 201, HorasPorcentajes::all());
-        } catch (\Throwable $th) {
-            return ApiResponse::error('Ocurrio un error', 201, []);
-        }
+
     }
 
     /**

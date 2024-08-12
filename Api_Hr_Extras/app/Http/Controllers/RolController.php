@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Rol\RolCreateRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\Rol;
 use App\Models\User;
@@ -52,27 +53,18 @@ class RolController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(RolCreateRequest $request)
     {
-        try {
-            $request->validate([
-                "employee_id" => "required|exists:employees,id",
-                'user' => "required|string|min:6",
-                'password' => "required|confirmed|string|min:4",
-                'rol' => "required"
-            ]);
-            foreach ($request->employee_id as $user_id) {
-                User::create([
-                    'employee_id' => $user_id,
-                    'user' => $request->user,
-                    'password' => Hash::make($request->password)
-                ])->assignRole($request->rol);
-            }
 
-            return ApiResponse::success("Usuario creado", 200, []);
-        } catch (\Throwable $th) {
-            return ApiResponse::error("Ocurrio un error", 400, []);
+        foreach ($request->employee_id as $user_id) {
+            User::create([
+                'employee_id' => $user_id,
+                'user' => $request->user,
+                'password' => Hash::make($request->password)
+            ])->assignRole($request->rol);
         }
+
+        return ApiResponse::success("Usuario creado", 200, []);
     }
 
     /**
@@ -94,9 +86,7 @@ class RolController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Rol $rol, $id)
-    {
-    }
+    public function destroy(Rol $rol, $id) {}
 
     public function deleteUser(User $user, $id)
     {
