@@ -7,7 +7,8 @@ export const RequestPuthRoles = async (res, id_empleados) => {
         'user': res.usuario,
         'password': res.password,
         'password_confirmation': res.password_confirmation,
-        'rol': res.rol
+        'rol': res.rol,
+        'email': res.email
     };
 
     try {

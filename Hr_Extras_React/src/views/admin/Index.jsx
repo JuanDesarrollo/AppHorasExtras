@@ -10,6 +10,7 @@ export const Admin = () => {
   const [res, setres] = useState({
     rol: "",
     usuario: "",
+    email: "",
     password: "",
     password_confirmation: "",
   });
@@ -64,6 +65,14 @@ export const Admin = () => {
                                 )
                               })}
                             </select>
+                          </div>
+                          <div className="form-group mb-3">
+                            <input type="email" className="form-control" placeholder="Correo electronico"
+                              required
+                              autofocus
+                              value={res.email}
+                              onChange={(e) => setres({ ...res, email: e.target.value })}
+                            />
                           </div>
                           <div className="form-group mb-3">
                             <input type="text" className="form-control" placeholder="Usuario"

@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         User::create([
             'employee_id' => '106',
             'user' => 'Admin',
-            'password' => Hash::make('123')
+            'password' => Hash::make('1234')
         ])->assignRole('Admin');
 
         //CREADORES

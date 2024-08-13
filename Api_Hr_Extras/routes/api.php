@@ -6,6 +6,7 @@ use App\Http\Controllers\ControlNominaController;
 use App\Http\Controllers\CourtController;
 use App\Http\Controllers\CurrentCutController;
 use App\Http\Controllers\DisapprovedHourController;
+use App\Http\Controllers\EmailEmployeeController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeeExtraController;
 use App\Http\Controllers\EmployeeTemporaryProgrammingController;
@@ -16,7 +17,9 @@ use App\Http\Controllers\InformesController;
 use App\Http\Controllers\JornadaMaximaController;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\ScheduleController;
+use App\Mail\NotificadorMail;
 use App\Models\JornadaMaxima;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Contracts\Role;
 
@@ -74,6 +77,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('Roles', RolController::class);
     Route::get('all_user', [RolController::class, "all_user"]);
     Route::delete('deleteUser/{id}', [RolController::class, "deleteUser"]);
-
-
 });

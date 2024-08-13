@@ -60,6 +60,7 @@ class RolController extends Controller
             User::create([
                 'employee_id' => $user_id,
                 'user' => $request->user,
+                'email' => $request->email,
                 'password' => Hash::make($request->password)
             ])->assignRole($request->rol);
         }

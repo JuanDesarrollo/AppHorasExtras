@@ -13,13 +13,12 @@ class employee extends Model
 
     protected $fillable = ['document', 'name', 'position', 'status', 'salary', 'area_id'];
 
-
     public function area(): BelongsTo
     {
         return $this->belongsTo(area::class, 'area_id');
     }
 
-      public function employeeTemporaryProgramming(): BelongsTo
+    public function employeeTemporaryProgramming(): BelongsTo
     {
         return $this->belongsTo(EmployeeTemporaryProgramming::class, "employee_id");
     }
@@ -29,9 +28,13 @@ class employee extends Model
         return $this->hasMany(User::class);
     }
 
-
     public function employeeExtras(): HasMany
     {
         return $this->hasMany(employee_extra::class, 'employee_id');
+    }
+
+    public function emailEmployee(): HasMany
+    {
+        return $this->hasMany(EmailEmployee::class, 'employee_id');
     }
 }
